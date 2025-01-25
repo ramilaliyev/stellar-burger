@@ -1,0 +1,37 @@
+.mainItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.resultPrice {
+
+}
+
+.resultPrice span {
+    font-size: 48px;
+}
+
+.icon {
+    width: 36px;
+    height: 36px;
+}
+
+.mains {
+    overflow-y: auto;
+
+    scrollbar-width: thin;      
+    scrollbar-color: #8585AD #2F2F37;
+}
+
+.container {
+    display: flex;
+    flex-direction: column; 
+    max-height: 70vh;        
+}
