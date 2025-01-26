@@ -4,12 +4,20 @@
     align-items: center;
 
     width: 100%;
+
+    background: #1C1C21;
 }
 
 .btn {
     display: flex;
 
     border-radius: 40px;
+    outline: none;
 
     background: none;
+
+}
+
+.btn:focus {
+    outline: none;
 }

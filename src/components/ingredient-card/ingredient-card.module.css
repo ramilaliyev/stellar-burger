@@ -5,6 +5,8 @@
     height: 208px;
 
     cursor: pointer;
+
+    text-align: center;
 }
 
 .ingredientCard:nth-child(odd) {

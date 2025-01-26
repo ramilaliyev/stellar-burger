@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react'
-import './App.css';
-import styles from './example.module.css';
-import AppHeader from './components/app-header/app-header';
-import BurgerConstructor from './components/burger-constructor/burger-constructor';
-import BurgerIngredients from './components/burger-ingredients/burger-ingredients';
-import Modal from './components/modal/modal';
+import styles from './app.module.css';
+import AppHeader from '../app-header/app-header';
+import BurgerConstructor from '../burger-constructor/burger-constructor';
+import BurgerIngredients from '../burger-ingredients/burger-ingredients';
+import Modal from '../modal/modal';
 
-import OrderDetails from './components/order-details/order-details';
-import IngredientDetails from './components/ingredient-details/ingredient-details';
+import OrderDetails from '../order-details/order-details';
+import IngredientDetails from '../ingredient-details/ingredient-details';
 
 
 // import ingredientsData from './utils/ingredients.json';
@@ -54,7 +53,12 @@ const App = () => {
     const getIngredients = async () => {
     setState({ ...state, isLoading: true });
     fetch(URL)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return Promise.reject(`Ошибка ${res.status}`);
+        }
+        return res.json()
+      })
       .then(data => setState({ ...state, data: data.data, isLoading: false }))
       .catch(e => {
         setState({ ...state, hasError: true, isLoading: false });
@@ -64,25 +68,29 @@ const App = () => {
     getIngredients();
   }, [])
 
+  const constructorData = {
+    bun: null, // здесь будет хранится только ингредиент выбранной булки
+    ingredients: data // здесь массив ингредиентов в составе бургера, соусы и начинки
+  }
+  
+  
   return (
     <div className='maincontent'>
       <AppHeader />
-      <main className="main">
+      <main className={styles.main}>
         {isLoading && 'Загрузка...'}
         {hasError && 'Произошла ошибка'}
         {!isLoading &&
         !hasError &&
         data.length &&
         <>
-          <BurgerIngredients ingredients={data}/>
-          <BurgerConstructor ingredients={data} orderBtnFunc={() => {setIsOpen(true); setIsOrderModal(true)}}  
-          ingredientBtnFunc={handleIngredientClick}/>
+          <BurgerIngredients ingredients={constructorData.ingredients} ingredientBtnFunc={handleIngredientClick}/>
+          <BurgerConstructor ingredients={constructorData.ingredients} orderBtnFunc={() => {setIsOpen(true); setIsOrderModal(true)}}  />
         </>}
       </main>
       <Modal isOpen={isOpen} onClose={closeAll} onOverlayClick={closeAll} onEscPress={closeAll} heading={isIngredientModal ? 'Детали ингредиента' : '' }>
         {isOrderModal && <OrderDetails />}
-        {isIngredientModal && <IngredientDetails calories={ingredientDetails.calories} proteins={ingredientDetails.proteins} 
-        fat={ingredientDetails.fat} carbohydrates={ingredientDetails.carbohydrates} name={ingredientDetails.name} image={ingredientDetails.image}/>}
+        {isIngredientModal && <IngredientDetails ingredients={ingredientDetails}/>}
       </Modal>
     </div>
   );

@@ -7,13 +7,13 @@ const IngredientDetails = props => {
     
     return (
         <>
-            <img src={props.image} alt="Ingredient" className={`mb-4 ${styles.img}`}/>
-            <p className={`text text_type_main-medium mb-8 ${styles.name}`}>{props.name}</p>
+            <img src={props.ingredients.image} alt={props.ingredients.name} className={`mb-4 ${styles.img}`}/>
+            <p className={`text text_type_main-medium mb-8 ${styles.name}`}>{props.ingredients.name}</p>
             <ul className={`${styles.propsList}`}>
-                <IngredientProp name="Калории,ккал" value={props.calories} />
-                <IngredientProp name="Белки, г" value={props.proteins} />
-                <IngredientProp name="Жиры, г" value={props.fat} />
-                <IngredientProp name="Углеводы, г" value={props.carbohydrates} />
+                <IngredientProp name="Калории,ккал" value={props.ingredients.calories} />
+                <IngredientProp name="Белки, г" value={props.ingredients.proteins} />
+                <IngredientProp name="Жиры, г" value={props.ingredients.fat} />
+                <IngredientProp name="Углеводы, г" value={props.ingredients.carbohydrates} />
             </ul>
 
         </>
@@ -21,12 +21,14 @@ const IngredientDetails = props => {
 }
 
 IngredientDetails.propTypes = {
-    image: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    calories: PropTypes.number.isRequired,
-    proteins: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
+    ingredients : PropTypes.shape({
+        image: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        calories: PropTypes.number.isRequired,
+        proteins: PropTypes.number.isRequired,
+        fat: PropTypes.number.isRequired,
+        carbohydrates: PropTypes.number.isRequired}
+    )
 }
 
 export default IngredientDetails;

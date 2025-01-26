@@ -18,3 +18,7 @@
     scrollbar-width: thin;      
     scrollbar-color: #8585AD #2F2F37;
 }
+
+.tabList {
+    display: flex;
+}
