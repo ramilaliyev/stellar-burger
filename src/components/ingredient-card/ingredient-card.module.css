@@ -1,0 +1,20 @@
+.ingredientCard {
+    position: relative;
+
+    width: 272px;
+    height: 208px;
+
+    cursor: pointer;
+}
+
+.ingredientCard:nth-child(odd) {
+    margin-right: 24px;
+}
+
+.price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 28px;
+}

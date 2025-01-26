@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import IngredientDetails from "../ingredient-details/ingredient-details";
+import IngredientCard from "../ingredient-card/ingredient-card";
 import styles from './burger-ingredients.module.css';
 
 
@@ -29,7 +29,7 @@ const BurgerIngredients = (props) => {
             <div className={styles.ingredientsDisplay}>
                 <BurgerIngredientsGroup title={"Булки"}>
                     {props.ingredients.filter(item => item.type === 'bun').map((ingredient) => (
-                    <IngredientDetails 
+                    <IngredientCard 
                         key={ingredient._id} 
                         name={ingredient.name} 
                         price={ingredient.price} 
@@ -39,7 +39,7 @@ const BurgerIngredients = (props) => {
                 </BurgerIngredientsGroup>
                 <BurgerIngredientsGroup title={"Соусы"}>
                     {props.ingredients.filter(item => item.type === 'sauce').map((ingredient) => (
-                        <IngredientDetails 
+                        <IngredientCard 
                             key={ingredient._id} 
                             name={ingredient.name} 
                             price={ingredient.price} 
@@ -49,7 +49,7 @@ const BurgerIngredients = (props) => {
                 </BurgerIngredientsGroup>
                 <BurgerIngredientsGroup title={"Начинки"}>
                     {props.ingredients.filter(item => item.type === 'main').map((ingredient) => (
-                        <IngredientDetails 
+                        <IngredientCard 
                             key={ingredient._id} 
                             name={ingredient.name} 
                             price={ingredient.price} 
@@ -73,8 +73,14 @@ const BurgerIngredientsGroup = props => {
     )
 }
 
+BurgerIngredients.propTypes = {
+    ingredients: PropTypes.array
+}
+
 BurgerIngredientsGroup.propTypes = {
-    title: PropTypes.string.isRequired
+    type: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    children: PropTypes.oneOfType([PropTypes.array, PropTypes.element])
 }
 
 export default BurgerIngredients;

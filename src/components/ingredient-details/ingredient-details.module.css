@@ -1,20 +1,4 @@
-.ingredientDetails {
-    position: relative;
-
-    width: 272px;
-    height: 208px;
-
-    cursor: pointer;
-}
-
-.ingredientDetails:nth-child(odd) {
-    margin-right: 24px;
-}
-
-.price {
+.propsList {
     display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 28px;
+    padding: 0;
 }
