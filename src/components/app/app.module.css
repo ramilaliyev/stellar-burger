@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'Iceland';
+  font-style: normal;
+  src: url("../../fonts/iceland.woff") format("woff");
+}
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1, h2 {
+  display: flex;
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.digits {
+  font-family: Iceland, sans-serif;
+}
