@@ -28,12 +28,6 @@ const App = () => {
     dispatch(getIngredients(URL));
   }, [dispatch]);
 
-  const [state, setState] = useState({
-    isLoading: false,
-    hasError: false,
-    data: []
-  });
-
   const [isOpen, setIsOpen] = useState(false);
   const [isOrderModal, setIsOrderModal] = useState(false);
   const [isIngredientModal, setIsIngredientModal] = useState(false);

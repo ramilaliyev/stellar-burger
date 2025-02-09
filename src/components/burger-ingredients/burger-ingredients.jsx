@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { nanoid } from 'nanoid';
-
-import { Tab, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
+import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import IngredientCard from "../ingredient-card/ingredient-card";
+import BurgerIngredientsGroup from "../burger-ingredients-group/burger-ingredients-group";
+
 import styles from './burger-ingredients.module.css';
 
 const BurgerIngredients = (props) => {
@@ -80,33 +80,24 @@ const BurgerIngredients = (props) => {
                 </Tab>
             </div>
             <div className={styles.ingredientsDisplay} ref={containerRef}>
-                {sections.map(section => (
-                    <div ref={section.ref} key={nanoid()}>
-                        <BurgerIngredientsGroup title={section.title}>
-                            {ingredients.filter(item => item.type === section.id).map((ingredient) => (
-                            <IngredientCard 
-                                key={ingredient._id} 
-                                {...ingredient}
-                                ingredientBtnFunc={() => props.ingredientBtnFunc(ingredient)}
-                                >
-                            </IngredientCard>
-                            ))}
-                        </BurgerIngredientsGroup>
-                    </div>
-                ))}
+                {sections.map((section, index) => {
+                    return (
+                        <div ref={section.ref} key={index}>
+                            <BurgerIngredientsGroup title={section.title}>
+                                {ingredients.filter(item => item.type === section.id).map((ingredient) => (
+                                <IngredientCard 
+                                    key={ingredient._id} 
+                                    {...ingredient}
+                                    ingredientBtnFunc={() => props.ingredientBtnFunc(ingredient)}
+                                    >
+                                </IngredientCard>
+                                ))}
+                            </BurgerIngredientsGroup>
+                        </div>
+                    )
+                })}
             </div>
         </section>
-    )
-}
-
-const BurgerIngredientsGroup = props => {
-    return (
-        <>
-            <h2 className="text text_type_main-medium mb-6 mt-2" value={props.type}>{props.title}</h2>
-            <div className={`ml-1 mr-1 ${styles.ingredientsGrid}`}>
-                {props.children}
-            </div>
-        </>
     )
 }
 
@@ -115,10 +106,5 @@ BurgerIngredients.propTypes = {
     ingredientBtnFunc: PropTypes.func
 }
 
-BurgerIngredientsGroup.propTypes = {
-    type: PropTypes.string,
-    title: PropTypes.string.isRequired,
-    children: PropTypes.oneOfType([PropTypes.array, PropTypes.element]),
-}
 
 export default BurgerIngredients;

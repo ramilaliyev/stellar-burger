@@ -9,12 +9,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { removeIngredient, addIngredient, addBun, moveIngredient } from "../../services/slices/burgerConstructorSlice";
 import { setOrderDetails } from "../../services/slices/orderDetailsSlice";
 
+const orderURL = 'https://norma.nomoreparties.space/api/orders';
+
 
 const BurgerConstructor = (props) => {
     const dispatch = useDispatch();
     const { bun, ingredients } = useSelector(state => state.burgerConstructor);
 
-    const [{ canDrop, isOver, handlerId }, drop] = useDrop(() => ({
+    const [ _, drop] = useDrop(() => ({
         accept: "ingredient",
         drop: (item) => {
             if (!item.fromBurgerConstructor) {
@@ -48,7 +50,7 @@ const BurgerConstructor = (props) => {
 
     const handleOrder = () => {
         dispatch(setOrderDetails({
-            URL: 'https://norma.nomoreparties.space/api/orders',
+            URL: orderURL,
             
             ingredients: orderRequest
         }))
