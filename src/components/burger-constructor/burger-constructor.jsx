@@ -18,7 +18,6 @@ const BurgerConstructor = (props) => {
         accept: "ingredient",
         drop: (item) => {
             if (!item.fromBurgerConstructor) {
-                // Добавляем ингредиент в состояние
                 if (item.type === 'bun') {
                     dispatch(addBun(item));
                 } else {

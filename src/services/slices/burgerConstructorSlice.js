@@ -25,15 +25,10 @@ export const burgerConstructorSlice = createSlice({
             const ingredients = [...state.ingredients]; 
         
             if (fromIndex === toIndex) return;
-        
             const [movedItem] = ingredients.splice(fromIndex, 1);
-        
             ingredients.splice(toIndex, 0, movedItem);
         
-            console.log(ingredients);
-            
             state.ingredients = ingredients;
-            console.log(state.ingredients);
         }        
     }
     
