@@ -1,65 +1,57 @@
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getIngredients } from '../../services/slices/ingredientSlice';
-import { getIngredientDetails } from '../../services/slices/ingredientDetailSlice';
+import { Routes, Route, useLocation } from 'react-router-dom';
+
+import { AppHeader } from '../app-header/app-header';
+import { Home } from '../../pages/home/home';
+import { Login } from '../../pages/login/login';
+import { Register } from '../../pages/register/register';
+import { ForgotPassword } from '../../pages/forgot-password/forgot-password';
+import { ResetPassword } from '../../pages/reset-password/reset-password';
+import { Profile } from '../../pages/profile/profile';
+import { ProfileComponent } from '../profile/profile';
+import { Orders } from '../orders/orders';
+import { Feed } from '../feed/feed';
+import { IngredientIndependent } from '../ingredient-independent/ingredient-independent';
+import { NotFound } from '../../pages/not-found/not-found';
+
+import Modal from '../modal/modal';
+import ProtectedRouteElement from '../protected-route/protected-route';
+
+import { Layout } from '../../pages/layout/layout';
 
 import styles from './app.module.css';
-import AppHeader from '../app-header/app-header';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import Modal from '../modal/modal';
-
-import OrderDetails from '../order-details/order-details';
-import IngredientDetails from '../ingredient-details/ingredient-details';
-
-
-// import ingredientsData from './utils/ingredients.json';
-
-const URL = 'https://norma.nomoreparties.space/api/ingredients';
 
 const App = () => {
-  const dispatch = useDispatch();
-
-  const { ingredients: ingredients, loading, error } = useSelector((state) => state.ingredients);
+  const location = useLocation();
+  const state = location.state;
   
-  const { details: ingredientDetails, loading: detailsLoading } = useSelector(state => state.ingredientDetails)
+  {state?.backgroundLocation && 
+    <Routes>
+      <Route path='/ingredients/:id' element={<Modal />} />
+    </Routes>
+  }
 
-  useEffect(() => {
-    dispatch(getIngredients(URL));
-  }, [dispatch]);
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [isOrderModal, setIsOrderModal] = useState(false);
-  const [isIngredientModal, setIsIngredientModal] = useState(false);
-
-  const handleIngredientClick = (ingredient) => {
-    dispatch(getIngredientDetails({ URL, id: ingredient._id }))
-    setIsOpen(true);
-    setIsIngredientModal(true);
-  };
-
-  const closeAll = () => {setIsOpen(false); setIsOrderModal(false); setIsIngredientModal(false)};
- 
-  
   return (
-    <div className='maincontent'>
+    <div className={styles.maincontent}>
       <AppHeader />
-      <main className={styles.main}>
-        {loading && 'Загрузка...'}
-        {error && 'Произошла ошибка'}
-        {!loading &&
-        !error &&
-        ingredients.length &&
-        <>
-          <BurgerIngredients ingredientBtnFunc={handleIngredientClick}/>
-          <BurgerConstructor orderBtnFunc={() => {setIsOpen(true); setIsOrderModal(true)}}  />
-        </>}
-      </main>
-      <Modal isOpen={isOpen} onClose={closeAll} onOverlayClick={closeAll} onEscPress={closeAll} heading={isIngredientModal ? 'Детали ингредиента' : '' }>
-        {isOrderModal && <OrderDetails />}
-        {detailsLoading && "Загрузка"}
-        {isIngredientModal && !detailsLoading && <IngredientDetails ingredient={ingredientDetails}/>}
-      </Modal>
+      <Routes location={state?.backgroundLocation || location}>
+        <Route path='/' element={<Home />} />
+        <Route path="/feed" element={<ProtectedRouteElement component={<Feed />} />} />
+        {/* <Route path='/feed' element={<Feed />} /> */}
+        <Route path='/ingredients/:id' element={<IngredientIndependent />} />
+        {/* <Route path='profile' element={<Profile />} > */}
+        <Route path="profile" element={<ProtectedRouteElement component={<Profile />} />} >
+          <Route index element={<ProfileComponent />}/>
+          <Route path="orders"  element={<Orders />}/>
+        </Route>
+        <Route element={<ProtectedRouteElement onlyUnAuth="true" component={<Layout />} />} >
+        {/* <Route element={<Layout />} > */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
     </div>
   );
 }

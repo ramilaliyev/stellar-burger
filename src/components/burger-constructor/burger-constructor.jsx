@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 
 import styles from './burger-constructor.module.css';
 import { useMemo, useRef } from "react";
-import { useDrag, useDrop } from 'react-dnd'
+import { useDrag, useDrop } from 'react-dnd';
+import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { removeIngredient, addIngredient, addBun, moveIngredient } from "../../services/slices/burgerConstructorSlice";
 import { setOrderDetails } from "../../services/slices/orderDetailsSlice";
@@ -13,8 +14,10 @@ const orderURL = 'https://norma.nomoreparties.space/api/orders';
 
 
 const BurgerConstructor = (props) => {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { bun, ingredients } = useSelector(state => state.burgerConstructor);
+    const { isAuthenticated } = useSelector(state => state.auth);
 
     const [ _, drop] = useDrop(() => ({
         accept: "ingredient",
@@ -49,6 +52,11 @@ const BurgerConstructor = (props) => {
     : ingredients.map(item => item._id);
 
     const handleOrder = () => {
+        if (!isAuthenticated) {
+            navigate("/login", { state: { from: "/order" } });  
+            return;
+        }
+
         dispatch(setOrderDetails({
             URL: orderURL,
             

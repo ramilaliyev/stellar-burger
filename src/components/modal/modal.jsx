@@ -42,10 +42,10 @@ const Modal = (props) => {
 
 Modal.propTypes = {
     onEscPress: PropTypes.func,
-    isOpen: PropTypes.bool.isRequired,
-    onOverlayClick: PropTypes.func.isRequired,
+    isOpen: PropTypes.bool,
+    onOverlayClick: PropTypes.func,
     heading: PropTypes.string,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func
 }
 
 export default Modal;

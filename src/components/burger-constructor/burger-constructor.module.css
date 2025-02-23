@@ -13,7 +13,7 @@
 }
 
 .resultPrice {
-
+    display: flex;
 }
 
 .resultPrice span {

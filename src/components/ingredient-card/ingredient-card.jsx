@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React  from "react";
 import { useDrag } from "react-dnd";
 import { useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 
 import styles from './ingredient-card.module.css';
 
@@ -35,17 +36,20 @@ const IngredientCard = (props) => {
         return acc;
     }, {});
     
+    const location = useLocation();
 
     return (
-        <div className={`mb-8 ${styles.ingredientCard}`} onClick={props.ingredientBtnFunc} ref={drag} style={{ opacity }}> 
-            <img src={props.image} alt={props.name} className="ml-1 mr-1"/>
-            <p className={`mt-1 mb-1 ${styles.price}`}>
-                <span className={`text text_type_digits-default mr-2`}>{props.price}</span>
-                <CurrencyIcon />
-            </p>
-            <p className="mt-1 mb-1 text text_type_main-default">{props.name}</p>
-            {ingredientCounts[props._id] > 0 && <Counter count={ingredientCounts[props._id]} size="default" extraClass="m-1" />}
-        </div>
+        <Link key={props._id} to={`/ingredients/${props._id}`} state={{backgroundLocation: location}}>
+            <div className={`mb-8 ${styles.ingredientCard}`} onClick={props.ingredientBtnFunc} ref={drag} style={{ opacity }}> 
+                <img src={props.image} alt={props.name} className="ml-1 mr-1"/>
+                <p className={`mt-1 mb-1 ${styles.price}`}>
+                    <span className={`text text_type_digits-default mr-2`}>{props.price}</span>
+                    <CurrencyIcon />
+                </p>
+                <p className="mt-1 mb-1 text text_type_main-default">{props.name}</p>
+                {ingredientCounts[props._id] > 0 && <Counter count={ingredientCounts[props._id]} size="default" extraClass="m-1" />}
+            </div>
+        </Link>
     )
 }
 
