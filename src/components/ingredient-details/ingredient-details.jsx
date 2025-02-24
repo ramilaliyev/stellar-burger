@@ -9,7 +9,7 @@ import { addIngredient, addBun } from "../../services/slices/burgerConstructorSl
 
 const IngredientDetails = () => {
     const dispatch = useDispatch();
-    const ingredient = useSelector(state => state.ingredientDetails.details);
+    const ingredient = JSON.parse(localStorage.getItem('ingredient'));
     
     const handleClick = (value) => {
         if (value.type === 'bun') {

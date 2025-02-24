@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { setAuthenticated, setAccessToken } from '../../services/slices/authSlice';
 
 export const Login = () => {
+    localStorage.removeItem('isOpen');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');

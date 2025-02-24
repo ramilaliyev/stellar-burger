@@ -23,12 +23,6 @@ import styles from './app.module.css';
 const App = () => {
   const location = useLocation();
   const state = location.state;
-  
-  {state?.backgroundLocation && 
-    <Routes>
-      <Route path='/ingredients/:id' element={<Modal />} />
-    </Routes>
-  }
 
   return (
     <div className={styles.maincontent}>
@@ -52,6 +46,13 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
+  
+      {state?.backgroundLocation &&
+      
+        <Routes>
+          <Route path='/ingredients/:id' element={<Modal />} />
+        </Routes>
+      }
     </div>
   );
 }

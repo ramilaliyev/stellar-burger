@@ -1,4 +1,3 @@
-import { Input, EmailInput, PasswordInput } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useLocation, useNavigate, NavLink, Outlet } from 'react-router-dom';
 
 import { api } from '../../utils/api';
