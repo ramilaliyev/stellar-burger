@@ -1,46 +1,122 @@
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import PropTypes from 'prop-types';
+import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
+import PropTypes from 'prop-types'; 
 
 import styles from './burger-constructor.module.css';
+import { useMemo, useRef } from "react";
+import { useDrag, useDrop } from 'react-dnd';
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { removeIngredient, addIngredient, addBun, moveIngredient } from "../../services/slices/burgerConstructorSlice";
+import { setOrderDetails } from "../../services/slices/orderDetailsSlice";
+
+const orderURL = 'https://norma.nomoreparties.space/api/orders';
+
 
 const BurgerConstructor = (props) => {
-    const nums = [2, 8, 5, 12, 6];
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { bun, ingredients } = useSelector(state => state.burgerConstructor);
+    const { isAuthenticated } = useSelector(state => state.auth);
+
+    const [ _, drop] = useDrop(() => ({
+        accept: "ingredient",
+        drop: (item) => {
+            if (!item.fromBurgerConstructor) {
+                if (item.type === 'bun') {
+                    dispatch(addBun(item));
+                } else {
+                    dispatch(addIngredient(item));
+                }
+            }
+        },
+        collect: (monitor) => ({
+          isOver: monitor.isOver(),
+          canDrop: monitor.canDrop(), 
+          handlerId: monitor.getHandlerId()
+        }),
+    }));
+
+    const moveCard = (fromIndex, toIndex) => {
+        dispatch(moveIngredient({ fromIndex, toIndex }));
+    };
+
+    const totalPrice = useMemo(() => {
+        const bunPrice = bun ? bun.price : 0;
+        const ingredientsPrice = ingredients.reduce((sum, item) => sum += item.price, 0);
+        return bunPrice * 2 + ingredientsPrice;
+    }, [bun, ingredients]);
+
+    const orderRequest = bun
+    ? [bun._id, ...ingredients.map(item => item._id), bun._id]
+    : ingredients.map(item => item._id);
+
+    const handleOrder = () => {
+        if (!isAuthenticated) {
+            navigate("/login", { state: { from: "/order" } });  
+            return;
+        }
+
+        dispatch(setOrderDetails({
+            URL: orderURL,
+            
+            ingredients: orderRequest
+        }))
+    }
 
     return (
-        <section className={`${styles.container} pt-25 ml-10 mb-10 pl-1 pr-1`}>
-            <div className={`ml-8 pr-4 ${styles.ingredientBtn}`}>
-                <ConstructorElement type="top" isLocked={true} text="Краторная булка N-200i (верх)" key={props.ingredients[0]._id} price={props.ingredients[0].price} thumbnail={props.ingredients[0].image}/>
+        <section ref={drop} className={`${styles.container} pt-25 ml-10 mb-10 pl-1 pr-1`}>
+            <div className={`${styles.ingredient} ${styles.ingredientTop} ml-8`} >
+                {bun ? (
+                    <ConstructorElement type="top" 
+                    isLocked={true} 
+                    text={`${bun.name} (верх)`} 
+                    key={bun._id} 
+                    price={bun.price} 
+                    thumbnail={bun.image}/> 
+                ) : (
+                    <p>Выберите булки</p>
+                )}
             </div>
-            <div className={`pt-1 pb-1 ${styles.mains}`}>
-              {nums.map((num) => {
-                  const ingredient = props.ingredients[num];
-                  return ingredient ? (
-                      <div className="mt-4 mb-4 mr-8" key={ingredient._id}>
-                          <div className={`mb-4 ${styles.mainItem}`}>
-                              <DragIcon className="mr-2" />
-                              <div className={styles.ingredientBtn}>
-                                <ConstructorElement
-                                    key={`${ingredient._id}-${Math.random()}`}
-                                    text={ingredient.name}
-                                    price={ingredient.price}
-                                    thumbnail={ingredient.image}
+            <div className={`mt-4 ${ingredients.length === 0 ? `mb-4` : ''} ${styles.mains}`}>
+                {ingredients.length > 0 ? (
+                    ingredients
+                        .filter(ingredient => ingredient.name !== '')  // Убираем пустые элементы, если они есть
+                        .map((ingredient, index) => (
+                            ingredient.type !== "bun" && (
+                                <DraggableIngredient 
+                                    key={ingredient.uniqueId} 
+                                    ingredient={ingredient} 
+                                    index={index} 
+                                    moveCard={moveCard}
                                 />
-                              </div>
-                          </div>
-                      </div>
-                  ) : null;
-              })}
+                            )
+                        ))
+                ) : (
+                    <div className={`${styles.mainItem} ${styles.ingredient} ml-8`}>
+                        <p>Выберите ингредиенты</p>
+                    </div>
+                )}
             </div>
-            <div className={`ml-8 mb-10 pr-8 ${styles.ingredientBtn}`}>
-                <ConstructorElement type="bottom" isLocked={true} text="Краторная булка N-200i (Низ)" key={props.ingredients[0]._id} price={props.ingredients[0].price} thumbnail={props.ingredients[0].image}/>
-            </div>
+            <div className={`mb-10 ${styles.ingredient} ${styles.ingredientBottom} ml-8`} >
+                {bun ? (
+                        <ConstructorElement type="bottom" 
+                        isLocked={true} 
+                        text={`${bun.name} (низ)`} 
+                        key={bun._id} 
+                        price={bun.price} 
+                        thumbnail={bun.image}/> 
+                    ) : (
+                        <p>Выберите булки</p>
+                    )}
+                </div>
             <div className={`pr-8 ${styles.result}`}>
                 <div className={`${styles.resultPrice} mr-10`}>
-                    <span className="text text_type_digits-medium mr-2">6000</span>
+                    <span className="text text_type_digits-medium mr-2">{totalPrice}</span>
                     <CurrencyIcon className={styles.icon}/>
                 </div>
                 <div className="btn" onClick={props.orderBtnFunc}>
-                    <Button htmlType="button" type="primary" size="large">
+                    <Button htmlType="button" type="primary" size="large" onClick={handleOrder}>
                         Оформить заказ
                     </Button>
                 </div>
@@ -50,22 +126,8 @@ const BurgerConstructor = (props) => {
 }
 
 BurgerConstructor.propTypes = {
-    ingredients: PropTypes.arrayOf(PropTypes.shape({
-        _id: PropTypes.string,
-       name: PropTypes.string,
-       type: PropTypes.string,
-       proteins: PropTypes.number,
-       fat: PropTypes.number,
-       carbohydrates: PropTypes.number,
-       calories: PropTypes.number,
-       price: PropTypes.number,
-       image: PropTypes.string,
-       image_mobile: PropTypes.string,
-       image_large: PropTypes.string,
-       __v: PropTypes.number
-    })).isRequired,
     orderBtnFunc: PropTypes.func,
-    ingredientBtnFunc: PropTypes.func
 }
 
 export default BurgerConstructor;
+
