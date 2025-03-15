@@ -1,0 +1,52 @@
+import styles from './ingredient-details.module.css';
+
+import { useDispatch } from 'react-redux';
+
+import IngredientProp from '../ingredient-prop/ingredient-prop';
+
+import { addIngredient, addBun } from "../../services/slices/burgerConstructorSlice";
+
+import { TIngredient } from '../../types/types';
+
+const IngredientDetails = () : React.JSX.Element => {
+    const dispatch = useDispatch();
+
+    
+     const ingredient: TIngredient | null = (() => {
+        const ingredientFromStorage = localStorage.getItem('ingredient');
+        if (!ingredientFromStorage) return null; 
+        
+        try {
+            return JSON.parse(ingredientFromStorage);
+        } catch (error) {
+            console.error("Ошибка при парсинге ингредиента:", error);
+            return null;
+        }
+    })();
+    
+    const handleClick = (value: TIngredient) => {
+        if (value.type === 'bun') {
+            dispatch(addBun(value));
+        } else {
+            dispatch(addIngredient(value));
+        }
+    }
+
+    if (!ingredient) return <p className="text text_type_main-medium">Загрузка...</p>;
+
+    return (
+        <>
+            <img src={ingredient.image} alt={ingredient.name} className={`mb-4 ${styles.img}`} onClick={() => handleClick(ingredient)}/>
+            <p className={`text text_type_main-medium mb-8 ${styles.name}`}>{ingredient.name}</p>
+            <ul className={`${styles.propsList}`}>
+                <IngredientProp name="Калории,ккал" value={ingredient.calories} />
+                <IngredientProp name="Белки, г" value={ingredient.proteins} />
+                <IngredientProp name="Жиры, г" value={ingredient.fat} />
+                <IngredientProp name="Углеводы, г" value={ingredient.carbohydrates} />
+            </ul>
+
+        </>
+    )
+}
+
+export default IngredientDetails;
