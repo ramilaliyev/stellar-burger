@@ -16,7 +16,6 @@ export const setOrderDetails = createAsyncThunk(
             });
 
             if (!res.ok) {
-                console.error('Ошибка от сервера:', res.status);
                 throw new Error(`Ошибка: ${res.status}`);
             };
 

@@ -1,26 +1,16 @@
-const URL = 'https://norma.nomoreparties.space/api';
-
 import { TLogin, TRefreshToken, TRegister, TSuccessMessage, TUserData, TUserResponse } from "../types/types";
+import { request } from "./request";
 
-const forgotPassword = (email : string) : Promise<TSuccessMessage> => {
-
-    const requestData = {
-        email: email
-    };
-
-    return fetch(`${URL}/password-reset`, {
+const forgotPassword = (email: string): Promise<TSuccessMessage> => {
+    return request<TSuccessMessage>('/password-reset', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestData),
-    })
-    .then(res =>  res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
-}
+        body: JSON.stringify({ email }),
+    });
+};
+
 
 const resetPassword = (password : string, token : string) : Promise<TSuccessMessage> => {
     const requestData = {
@@ -28,18 +18,13 @@ const resetPassword = (password : string, token : string) : Promise<TSuccessMess
         token: token
     };
 
-    return fetch(`${URL}/password-reset/reset`, {
-        method: "POST",
+    return request<TSuccessMessage>('/password-reset/reset', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestData),
-    })
-    .then(res => res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
+    });
 }
 
 const login = (email: string, password: string): Promise<TLogin> => {
@@ -48,18 +33,13 @@ const login = (email: string, password: string): Promise<TLogin> => {
         password: password
     };
 
-    return fetch(`${URL}/auth/login`, {
+    return request<TLogin>('/auth/login', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(requestData)
-    })
-    .then(res => res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
+    });
 }
 
 const logout = (token : string): Promise<TSuccessMessage> => {
@@ -67,18 +47,13 @@ const logout = (token : string): Promise<TSuccessMessage> => {
         token: token
     };
 
-    return fetch(`${URL}/auth/logout`, {
+    return request<TSuccessMessage>('/auth/logout', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(requestData)
-    })
-    .then(res => res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
+    });
 }
 
 const register = (name: string, email: string, password: string): Promise<TRegister> => {
@@ -88,18 +63,13 @@ const register = (name: string, email: string, password: string): Promise<TRegis
         password: password
     };
 
-    return fetch(`${URL}/auth/register`, {
+    return request<TRegister>('/auth/register', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(requsetData)
-    })
-    .then(res => res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
+    });
 }
 
 export const getToken = (): Promise<TRefreshToken>  => {
@@ -107,49 +77,34 @@ export const getToken = (): Promise<TRefreshToken>  => {
         token: localStorage.getItem('refreshToken')
     }
 
-    return fetch(`${URL}/auth/token`, {
+    return request<TRefreshToken>('/auth/token', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(requestData)
-    })
-    .then(res => res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
+    });
 }
 
 export const getUser = (): Promise<TUserResponse> => {
-    return fetch(`${URL}/auth/user`, {
+    return request<TUserResponse>(`/auth/user`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `${localStorage.getItem("accessToken")}`
         }
-    })
-    .then(res => res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
+    });
 }
 
 const updateUser = (userData : TUserData): Promise<TUserResponse> => {
-    return fetch(`${URL}/auth/user`, {
+    return request<TUserResponse>(`/auth/user`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `${localStorage.getItem("accessToken")}`
         },
         body: JSON.stringify(userData)
-    })
-    .then(res => res.json())
-    .then(data => data)
-    .catch(() => {
-        throw new Error('Произошла ошибка');
-    })
+    });
 }
 
 export const api = {
