@@ -1,6 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+type TLoginSlice = {
+    isAuthenticated: boolean,
+    accessToken: string | null,
+    refreshToken: string | null,
+    error: string,
+    isLoading: boolean,
+}
+
+const initialState : TLoginSlice = {
     isAuthenticated: false,
     accessToken: null,
     refreshToken: null,
@@ -12,19 +20,19 @@ const authSlice = createSlice({
     name: 'login',
     initialState,
     reducers: {
-        setAuthenticated: (state, action) => {
+        setAuthenticated: (state, action : PayloadAction<boolean>) => {
             state.isAuthenticated = action.payload;            
         },
-        setAccessToken: (state, action) => {
+        setAccessToken: (state, action : PayloadAction<string | null>) => {
             state.accessToken = action.payload;
         },
-        setRefreshToken: (state, action) => {
+        setRefreshToken: (state, action : PayloadAction<string | null>) => {
             state.refreshToken = action.payload;
         },
-        setError: (state, action) => {
+        setError: (state, action : PayloadAction<string>) => {
             state.error = action.payload;
         },
-        setIsLoading: (state, action) => {
+        setIsLoading: (state, action : PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
         clearAuthData: (state) => {

@@ -1,6 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+type TAuthSlice = {
+  isAuthChecked: boolean,  
+  isAuthenticated: boolean, 
+  accessToken: string | null, 
+};
+
+const initialState : TAuthSlice = {
   isAuthChecked: false,  
   isAuthenticated: false, 
   accessToken: localStorage.getItem('accessToken') || null, 
@@ -11,13 +17,13 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuthChecked: (state, action) => {
+    setAuthChecked: (state, action : PayloadAction<boolean>) => {
       state.isAuthChecked = action.payload;
     },
-    setAuthenticated: (state, action) => {
+    setAuthenticated: (state, action : PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
-    setAccessToken: (state, action) => {
+    setAccessToken: (state, action : PayloadAction<string | null>) => {
       state.accessToken = action.payload;
     },
     logout: (state) => {

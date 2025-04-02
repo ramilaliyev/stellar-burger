@@ -1,14 +1,32 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { clearConstructor } from "./burgerConstructorSlice";
+
+type TParams = {
+    URL : string;
+    ingredients: Array<string>
+};
+
+type TOrderDetailsSlice = {
+    orderNum: string | null,
+    loading: boolean,
+    error: string | null
+}
+
+const initialState : TOrderDetailsSlice  = {
+    orderNum: null,
+    loading: false,
+    error: null
+}
 
 export const setOrderDetails = createAsyncThunk(
     "orderDetails/setOrderDetails",
-    async({URL, ingredients}, { rejectWithValue, dispatch }) => {
+    async({URL, ingredients} : TParams, { rejectWithValue, dispatch }) => {
         try {
             const res = await fetch(URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    "Authorization": `${localStorage.getItem("accessToken")}`
                 },
                 body: JSON.stringify({
                     ingredients: ingredients,
@@ -25,7 +43,7 @@ export const setOrderDetails = createAsyncThunk(
 
             return data.order.number;
 
-        } catch (error) {
+        } catch (error : any) {
             return rejectWithValue(error);
         }
     }
@@ -33,11 +51,7 @@ export const setOrderDetails = createAsyncThunk(
 
 const orderDetailsSlice = createSlice({
     name: "orderDetails",
-    initialState: {
-        orderNum: null,
-        loading: false,
-        error: null
-    },
+    initialState,
     reducers: {},
     extraReducers: builder => {
         builder
@@ -45,11 +59,11 @@ const orderDetailsSlice = createSlice({
             state.loading = true;
             state.error = null;
         })
-        .addCase(setOrderDetails.fulfilled, (state, action) => {
+        .addCase(setOrderDetails.fulfilled, (state, action: PayloadAction<string>) => {
             state.loading = false;
             state.orderNum = action.payload;
         })
-        .addCase(setOrderDetails.rejected, (state, action) => {
+        .addCase(setOrderDetails.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.error = action.payload;
         })

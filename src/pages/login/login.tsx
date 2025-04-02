@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { EmailInput, PasswordInput, Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AppDispatch } from "../../services/store";
 
 import styles from "./login.module.css";
 
@@ -21,14 +22,14 @@ export const Login = (): React.JSX.Element => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         setError("");
 
-        // @ts-ignore
+        
         dispatch(loginUser({ email, password }))
             .unwrap()
             .then(({ fromPage } : TLoginResponse) => {

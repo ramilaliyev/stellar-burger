@@ -6,13 +6,13 @@ import IngredientProp from '../ingredient-prop/ingredient-prop';
 
 import { addIngredient, addBun } from "../../services/slices/burgerConstructorSlice";
 
-import { TIngredient } from '../../types/types';
+import { TDraggableIngredient } from '../../types/types';
 
 const IngredientDetails = () : React.JSX.Element => {
     const dispatch = useDispatch();
 
     
-     const ingredient: TIngredient | null = (() => {
+     const ingredient: TDraggableIngredient | null = (() => {
         const ingredientFromStorage = localStorage.getItem('ingredient');
         if (!ingredientFromStorage) return null; 
         
@@ -24,7 +24,7 @@ const IngredientDetails = () : React.JSX.Element => {
         }
     })();
     
-    const handleClick = (value: TIngredient) => {
+    const handleClick = (value: TDraggableIngredient) => {
         if (value.type === 'bun') {
             dispatch(addBun(value));
         } else {

@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { addIngredient, addBun, moveIngredient } from "../../services/slices/burgerConstructorSlice";
 import { setOrderDetails } from "../../services/slices/orderDetailsSlice";
 
-import { RootState } from "../../services/store";
+import { RootState, AppDispatch } from "../../services/store";
 import { TIngredient, TDraggableIngredient } from "../../types/types";
 
 const orderURL = 'https://norma.nomoreparties.space/api/orders';
@@ -25,7 +25,7 @@ type TAllIngredients = {
 
 const BurgerConstructor = (props : TBurgerConstructorProps) : React.JSX.Element => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     const { bun, ingredients } = useSelector<RootState, TAllIngredients>((state) => ({
         bun: state.burgerConstructor.bun,
@@ -74,7 +74,6 @@ const BurgerConstructor = (props : TBurgerConstructorProps) : React.JSX.Element 
             return;
         }
 
-        // @ts-ignore
         dispatch(setOrderDetails({
             URL: orderURL,
             

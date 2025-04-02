@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getIngredients } from '../../services/slices/ingredientSlice';
+import { AppDispatch } from "../../services/store";
 
 import IngredientProp from '../ingredient-prop/ingredient-prop';
 
@@ -22,7 +23,7 @@ type TResult = {
 export const IngredientIndependent = () : React.JSX.Element => {
     const { id } = useParams();
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { ingredients, loading, error } = useSelector<RootState, TResult> ((state) => ({
         ingredients: state.ingredients.ingredients || [], // Гарантируем массив
         loading: state.ingredients.loading,
@@ -31,7 +32,6 @@ export const IngredientIndependent = () : React.JSX.Element => {
     
 
     useEffect(() => {
-        // @ts-ignore
         dispatch(getIngredients(URL));
     }, [dispatch]);
 

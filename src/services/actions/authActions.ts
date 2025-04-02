@@ -4,11 +4,11 @@ import { setAuthChecked, setAuthenticated } from "../slices/authSlice";
 
 export const checkAuth = createAsyncThunk("auth/checkAuth", async (_, { dispatch }) => {
   const accessToken = localStorage.getItem("accessToken");
+  
 
   if (accessToken) {
     try {
       const res = await getUser();
-      console.log(res.ok);
 
       if (res.ok) { // Здесь оставил как есть т.к. это не общий случай с другими в проекте. Пробовал варианты, искал что-то, но в итоге решил оставить так.
         dispatch(setAuthenticated(true));

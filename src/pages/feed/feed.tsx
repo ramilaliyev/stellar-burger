@@ -1,55 +1,68 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../services/store";
 import { useNavigate } from "react-router-dom";
-import styles from './orders.module.css';
-
-import { FeedItem } from "../feed-item/feed-item";
-import { getLocalStorageItem } from "../../utils/getLSItem";
-import { TIngredient, TOrderResponse } from "../../types/types";
-
-import Modal from '../../components/modal/modal';
-import { OrderComponents } from '../../components/order-components/order-components';
-import { ordersConnectionStart } from "../../services/slices/ordersSlice";
+import { feedConnectionStart } from "../../services/actions/feedActions";
+import { RootState, AppDispatch } from "../../services/store";
 import { getIngredientDetails } from "../../services/slices/ingredientDetailSlice";
+import { getFeedDetails } from "../../utils/getFeedDetails";
+import { TIngredient, TOrderResponse } from "../../types/types";
+import styles from './feed.module.css';
+
+import { FeedItem } from "../../components/feed-item/feed-item";
+import { OrderStats } from "../../components/order-stats/order-stats";
+import Modal from "../../components/modal/modal";
+import { OrderComponents } from "../../components/order-components/order-components";
+
+import { getLocalStorageItem } from "../../utils/getLSItem";
 
 
-const URL = "wss://norma.nomoreparties.space/orders/";
+const URL = 'https://norma.nomoreparties.space/api/ingredients';
 
-export const Orders = (): React.JSX.Element => {
+export const Feed = () : React.JSX.Element => {
     const [isOpen, setIsOpen] = useState<boolean>(() => getLocalStorageItem('isOpen', false));
     const [isOrderModal, setIsOrderModal] = useState<boolean>(() => getLocalStorageItem('isOrderModal', false));
 
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        dispatch(ordersConnectionStart());
-    }, [dispatch]);
-
-    const message = useSelector((state : RootState) => state.orders.message);
-    const parsedMessage = message ? JSON.parse(message) : { orders: [] };
-
     const closeAll = () => {
         setIsOpen(false);
         setIsOrderModal(false);
+        navigate("/feed");
     };
     
+
+    const message = useSelector((state: RootState) => state.feed.message);
+
+    const parsedMessage = message ? JSON.parse(message) : { orders: [] };
+
     const handleOrderClick = (order : TOrderResponse) => {
+        getFeedDetails({orders: parsedMessage.orders, id: order._id });
         setIsOpen(true);
         setIsOrderModal(true);
         localStorage.setItem("orderId", order._id);
         localStorage.setItem("totalPrice", `${orderTotals.get(order._id)}`);
     };
+
+    
+    useEffect(() => {
+        localStorage.setItem('isOpen', JSON.stringify(isOpen));
+        localStorage.setItem('isOrderModal', JSON.stringify(isOrderModal));
+    }, [isOpen]);
+
+
     const [orderTotals, setOrderTotals] = useState<Map<string, number>>(new Map());
     const [loadedIngredients, setLoadedIngredients] = useState<Map<string, TIngredient>>(new Map());
 
-    
+    useEffect(() => {
+        dispatch(feedConnectionStart());
+    }, [dispatch]);
+
     // Получение ингредиента по ID
     const getIngredientById = async (id: string): Promise<TIngredient | null> => {        
         try {
             const result = await dispatch(
-                getIngredientDetails({ URL : 'https://norma.nomoreparties.space/api/ingredients', id })
+                getIngredientDetails({ URL, id })
             ).unwrap(); 
             return result;
         } catch (error) {
@@ -57,11 +70,6 @@ export const Orders = (): React.JSX.Element => {
             return null;
         }
     };
-    
-    useEffect(() => {
-        localStorage.setItem('isOpen', JSON.stringify(isOpen));
-        localStorage.setItem('isOrderModal', JSON.stringify(isOrderModal));
-    }, [isOpen]);
     
     // Расчёт общей стоимости заказа
     const calculateOrderTotal = async (ingredientIds: string[]): Promise<number> => {
@@ -72,7 +80,7 @@ export const Orders = (): React.JSX.Element => {
         }
         return total;
     };
-    
+
     // Заполняем общие стоимости заказов
     useEffect(() => {
         const fetchOrderTotals = async () => {
@@ -105,27 +113,36 @@ export const Orders = (): React.JSX.Element => {
         }
     }, [parsedMessage.orders]);
 
+    const doneOrders = 
+    parsedMessage.orders.map((order : TOrderResponse) => order.status === 'done' ? order.number : null).slice(0, 10);
+
+    const pendingOrders = 
+    parsedMessage.orders.map((order : TOrderResponse) => order.status === 'pending' ? order.number : null).slice(0, 10);
+    
     return (
         <>
-            <ul className={`pr-4 ${styles.ordersList}`}>
-                {parsedMessage && parsedMessage.orders.map((order: TOrderResponse, index: number) => {
-                    const orderTotal = orderTotals.get(order._id); // Получаем рассчитанную стоимость для этого заказа
-                    return (
-                        <>
-                            <FeedItem key={index} feed = {order} path = {`/profile/orders/${order._id}`}  
-                            loadedIngredients = {loadedIngredients}  
-                            orderTotal = {orderTotal} 
-                            clickHandler = {() => handleOrderClick(order)}/>
-                        </>
-                    );
-                })}
+            <h1 className="text text_type_main-large mt-10 mb-5">Лента заказов</h1>
+            <div className={styles.container}>
+                <div className={`pr-6 mr-15 ${styles.feedList}`}>
+                    {parsedMessage.orders.map((order: TOrderResponse, index: number) => {
+                        const orderTotal = orderTotals.get(order._id); // Получаем рассчитанную стоимость для этого заказа
+                        return (
+                            <>
+                                <FeedItem key={index} feed = {order} path = {`/feed/${order._id}`}  
+                                loadedIngredients = {loadedIngredients}  
+                                orderTotal = {orderTotal} 
+                                clickHandler = {() => handleOrderClick(order)}/>
+                            </>
+                        );
+                    })}
+                </div>
+                <OrderStats total={parsedMessage.total} totalToday={parsedMessage.totalToday} doneOrders={doneOrders} pendingOrders={pendingOrders}/>
+            </div>
 
-                {!parsedMessage && <h2 className="text text_type_main-large">Нет заказов</h2>}
-            </ul>   
-                
+            
             <Modal isOpen={isOpen} onClose={closeAll} onOverlayClick={closeAll} onEscPress={closeAll}>
-                {isOrderModal && <OrderComponents id={localStorage.getItem('orderId')} loadedIngredients = {loadedIngredients}/>}
+                {isOrderModal && <OrderComponents id={localStorage.getItem("orderId") } loadedIngredients = {loadedIngredients}/>}
             </Modal>
         </>
     )
-}
+};

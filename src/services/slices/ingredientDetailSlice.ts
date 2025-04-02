@@ -1,9 +1,26 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { TIngredient } from "../../types/types";
 
+type TParams = {
+    URL : string;
+    id: string;
+};
+
+type TIngredientDetailsSlice = {
+    details: TIngredient | null,
+    loading: boolean,
+    error: string | null
+};
+
+const initialState: TIngredientDetailsSlice = {
+    details: null,
+    loading: false,
+    error: null
+}
 
 export const getIngredientDetails = createAsyncThunk (
     "ingredientsDetail/getIngredientDetails",
-    async({ URL, id }, { rejectWithValue }) => {
+    async({ URL, id } : TParams, { rejectWithValue }) => {
         try {
             const res = await fetch(URL);
 
@@ -13,9 +30,9 @@ export const getIngredientDetails = createAsyncThunk (
 
             const data = await res.json();
 
-            return data.data.find(ingredient => ingredient._id === id);
+            return data.data.find((ingredient : {_id: string}) => ingredient._id === id);
 
-        } catch (error) {
+        } catch (error : any) {
             return rejectWithValue(error.message);
         }
     }
@@ -23,11 +40,7 @@ export const getIngredientDetails = createAsyncThunk (
 
 const ingredientDetailsSlice = createSlice({
     name: "ingredientDetails",
-    initialState: {
-        details: [],
-        loading: false,
-        error: null
-    },
+    initialState,
     reducers: {},
     extraReducers: builder => {
         builder
@@ -35,11 +48,11 @@ const ingredientDetailsSlice = createSlice({
             state.loading = true;
             state.error = null;
         })
-        .addCase(getIngredientDetails.fulfilled, (state, action) => {
+        .addCase(getIngredientDetails.fulfilled, (state, action : PayloadAction<TIngredient | null>) => {
             state.loading = false;
             state.details = action.payload;
         })
-        .addCase(getIngredientDetails.rejected, (state, action) => {
+        .addCase(getIngredientDetails.rejected, (state, action : PayloadAction<any>) => {
             state.loading = false;
             state.error = action.payload;
         })

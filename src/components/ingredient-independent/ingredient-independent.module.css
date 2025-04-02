@@ -8,4 +8,6 @@
 
 .propsList {
     display: flex;
+
+    overflow: hidden;
 }

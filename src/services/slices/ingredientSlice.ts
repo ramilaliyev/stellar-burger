@@ -1,9 +1,21 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { TIngredient } from "../../types/types";
 
+type TIngredientSlice = {
+    ingredients: TIngredient[] | [],
+    loading: boolean,
+    error: string | null
+};
+
+const initialState : TIngredientSlice = {
+    ingredients: [],
+    loading: false,
+    error: null
+};
 
 export const getIngredients = createAsyncThunk(
     "ingredients/getIngredients",
-    async(URL, { rejectWithValue }) => {
+    async(URL : string , { rejectWithValue }) => {
         try {
             const res = await fetch(URL);
 
@@ -13,7 +25,7 @@ export const getIngredients = createAsyncThunk(
 
             const data = await res.json();
             return data.data
-        } catch {
+        } catch (error : any) {
             return rejectWithValue(error.message);
         }
     }
@@ -21,12 +33,8 @@ export const getIngredients = createAsyncThunk(
 
 const ingredientSlice = createSlice({
     name: "ingredients",
-    initialState: {
-        ingredients: [],
-        loading: false,
-        error: null
-    },
     reducers: {},
+    initialState,
     extraReducers: builder => {
         builder
         .addCase(getIngredients.pending, state => {
@@ -34,11 +42,11 @@ const ingredientSlice = createSlice({
             state.error = null;
             
         })
-        .addCase(getIngredients.fulfilled, (state, action) => {
+        .addCase(getIngredients.fulfilled, (state, action : PayloadAction<TIngredient[] | []>) => {
             state.loading = false;
             state.ingredients = action.payload;
         })
-        .addCase(getIngredients.rejected, (state, action) => {
+        .addCase(getIngredients.rejected, (state, action : PayloadAction<any>) => {
             state.loading = false;
             state.error = action.payload;
         })
