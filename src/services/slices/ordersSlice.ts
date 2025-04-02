@@ -7,6 +7,10 @@ interface OrdersState {
   error: string | null;
 }
 
+interface OrdersConnectionStartPayload {
+  endpoint: string;  // Добавляем параметр endpoint
+}
+
 const initialState: OrdersState = {
   message: '',
   isConnected: false,
@@ -17,7 +21,7 @@ const ordersSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    ordersConnectionStart: (state) => {
+    ordersConnectionStart: (state, action: PayloadAction<OrdersConnectionStartPayload>) => {
       state.isConnected = false;
       state.error = null;
     },
@@ -32,7 +36,7 @@ const ordersSlice = createSlice({
       state.isConnected = false;
     },
     ordersGetMessage: (state, action: PayloadAction<string>) => {
-      state.message = action.payload
+      state.message = action.payload;
     },
   },
 });

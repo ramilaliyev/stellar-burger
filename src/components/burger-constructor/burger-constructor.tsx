@@ -5,14 +5,16 @@ import styles from './burger-constructor.module.css';
 import { useMemo, } from "react";
 import { useDrop } from 'react-dnd';
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
 import { addIngredient, addBun, moveIngredient } from "../../services/slices/burgerConstructorSlice";
 import { setOrderDetails } from "../../services/slices/orderDetailsSlice";
 
-import { RootState, AppDispatch } from "../../services/store";
+import { RootState } from "../../services/store";
 import { TIngredient, TDraggableIngredient } from "../../types/types";
 
-const orderURL = 'https://norma.nomoreparties.space/api/orders';
+import { baseURL } from "../../utils/baseURL";
+
+const orderURL = `${baseURL}/orders`;
 
 type TBurgerConstructorProps = {
     orderBtnFunc: () => void;
@@ -25,13 +27,13 @@ type TAllIngredients = {
 
 const BurgerConstructor = (props : TBurgerConstructorProps) : React.JSX.Element => {
     const navigate = useNavigate();
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
 
-    const { bun, ingredients } = useSelector<RootState, TAllIngredients>((state) => ({
+    const { bun, ingredients } = useAppSelector<RootState, TAllIngredients>((state) => ({
         bun: state.burgerConstructor.bun,
         ingredients: state.burgerConstructor.ingredients || []
     }));
-    const { isAuthenticated } = useSelector((state : RootState) => state.auth);
+    const { isAuthenticated } = useAppSelector((state) => state.auth);
 
     const [ _, drop] = useDrop(() => ({
         accept: "ingredient",

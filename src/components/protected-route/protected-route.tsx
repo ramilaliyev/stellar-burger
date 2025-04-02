@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
 import { Navigate, useLocation } from "react-router-dom";
 import { checkAuth } from "../../services/actions/authActions";
-import { RootState, AppDispatch } from "../../services/store";
 
 type TProtectedRouteElementProps = {
   component: React.JSX.Element;
@@ -10,8 +9,8 @@ type TProtectedRouteElementProps = {
 };
 
 const ProtectedRouteElement = ({ component, onlyUnAuth = false }: TProtectedRouteElementProps): React.JSX.Element => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, isAuthChecked } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, isAuthChecked } = useAppSelector((state) => state.auth);
   const location = useLocation();
   const [loading, setLoading] = useState<boolean>(true);
 

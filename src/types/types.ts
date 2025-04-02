@@ -81,3 +81,13 @@ export type TUserData = {
     email: string;
     password: string;
 }
+
+// WebSocket
+export interface TWsActions {
+    connectionStart: string;
+    connectionSuccess: string;
+    connectionError: string;
+    connectionClosed: string;
+    getMessage: string;
+  }
+  

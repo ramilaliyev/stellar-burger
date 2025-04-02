@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../../services/store";
+import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
 import { OrderComponents } from "../order-components/order-components";
 import { getIngredientDetails } from "../../services/slices/ingredientDetailSlice";
 import { TIngredient } from "../../types/types";
+import { baseURL } from "../../utils/baseURL";
 
 import styles from "./feed-detail.module.css";
 
-const URL = "https://norma.nomoreparties.space/api/ingredients";
+const URL = `${baseURL}/ingredients`;
 
 export const FeedDetail = (): React.JSX.Element => {
-    const dispatch = useDispatch<AppDispatch>();
-    const message = useSelector((state: RootState) => state.feed.message);
+    const dispatch = useAppDispatch();
+    const message = useAppSelector((state) => state.feed.message);
     const parsedMessage = message ? JSON.parse(message) : { orders: [] };
 
     const [loadedIngredients, setLoadedIngredients] = useState<Map<string, TIngredient>>(new Map());

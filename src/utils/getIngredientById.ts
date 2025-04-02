@@ -1,14 +1,13 @@
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../utils/appHooks";
 import { getIngredientDetails } from "../services/slices/ingredientDetailSlice";
 import { TIngredient } from "../types/types";
-import { AppDispatch } from "../services/store";
+import { baseURL } from "./baseURL";
 
 
-const URL = 'https://norma.nomoreparties.space/api/ingredients';
+const URL = `${baseURL}/ingredients`;;
 
-// Получение ингредиента по ID
 export const getIngredientById = async (id: string): Promise<TIngredient | null> => {   
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     
     try {
         const result = await dispatch(

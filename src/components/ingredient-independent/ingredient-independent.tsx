@@ -1,13 +1,8 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
 import { useParams } from "react-router-dom";
-import { getIngredients } from '../../services/slices/ingredientSlice';
-import { AppDispatch } from "../../services/store";
 
 import IngredientProp from '../ingredient-prop/ingredient-prop';
-
-
-const URL = 'https://norma.nomoreparties.space/api/ingredients';
 
 import styles from './ingredient-independent.module.css';
 
@@ -23,17 +18,14 @@ type TResult = {
 export const IngredientIndependent = () : React.JSX.Element => {
     const { id } = useParams();
 
-    const dispatch = useDispatch<AppDispatch>();
-    const { ingredients, loading, error } = useSelector<RootState, TResult> ((state) => ({
+    const dispatch = useAppDispatch();
+    const { ingredients, loading, error } = useAppSelector<RootState, TResult> ((state) => ({
         ingredients: state.ingredients.ingredients || [], // Гарантируем массив
         loading: state.ingredients.loading,
         error: state.ingredients.error
     }));
     
 
-    useEffect(() => {
-        dispatch(getIngredients(URL));
-    }, [dispatch]);
 
     if (loading) {
         return <p>Загрузка...</p>;

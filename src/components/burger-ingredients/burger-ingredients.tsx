@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../utils/appHooks";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import IngredientCard from "../ingredient-card/ingredient-card";
@@ -7,7 +7,6 @@ import BurgerIngredientsGroup from "../burger-ingredients-group/burger-ingredien
 
 import styles from './burger-ingredients.module.css';
 
-import { RootState } from "../../services/store";
 import { TIngredient } from "../../types/types";
 
 type TBurgerIngredientsProps = {
@@ -21,7 +20,7 @@ type TSection = {
 };
 
 const BurgerIngredients = (props : TBurgerIngredientsProps) : JSX.Element => {
-    const ingredients : TIngredient[] = useSelector((state: RootState) => state.ingredients.ingredients);
+    const ingredients : TIngredient[] = useAppSelector((state) => state.ingredients.ingredients);
     const [current, setCurrent] = React.useState<string>('bun');
     const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,12 +67,22 @@ const BurgerIngredients = (props : TBurgerIngredientsProps) : JSX.Element => {
         setCurrent(value);
     };
 
+    // useEffect(() => {
+    //     const container = containerRef.current;
+    //     if (!container) return;
+
+    //     container.addEventListener("scroll", () => handleScroll(sections));
+    //     return () => container.removeEventListener("scroll", () => handleScroll(sections));
+    // }, []);
+
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
-
-        container.addEventListener("scroll", () => handleScroll(sections));
-        return () => container.removeEventListener("scroll", () => handleScroll(sections));
+    
+        const scrollHandler = () => handleScroll(sections);
+    
+        container.addEventListener("scroll", scrollHandler); 
+        return () => container.removeEventListener("scroll", scrollHandler); 
     }, []);
 
 

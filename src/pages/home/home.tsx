@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
 import { useNavigate } from 'react-router-dom';
 
-import { getIngredients } from '../../services/slices/ingredientSlice';
 import { getIngredientDetails } from '../../services/slices/ingredientDetailSlice';
 
 import styles from './home.module.css';
@@ -13,26 +12,23 @@ import Modal from '../../components/modal/modal';
 import OrderDetails from '../../components/order-details/order-details';
 import IngredientDetails from '../../components/ingredient-details/ingredient-details';
 
-import { RootState, AppDispatch } from '../../services/store';
 import { TIngredient } from '../../types/types';
+
+import { baseURL } from "../../utils/baseURL";
 
 import { getLocalStorageItem } from '../../utils/getLSItem';
 
-const URL = 'https://norma.nomoreparties.space/api/ingredients';
+const URL = `${baseURL}/ingredients`;;
 
 export const Home = (): React.JSX.Element => {
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const { ingredients, loading, error } = useSelector((state: RootState) => state.ingredients);
-    const { details: ingredientDetails, loading: detailsLoading, error: detailsError } = useSelector(
-        (state: RootState) => state.ingredientDetails
+    const { ingredients, loading, error } = useAppSelector((state) => state.ingredients);
+    const { details: ingredientDetails, loading: detailsLoading, error: detailsError } = useAppSelector(
+        (state) => state.ingredientDetails
     );
 
-    useEffect(() => {
-        
-        dispatch(getIngredients(URL));
-    }, [dispatch]);
 
     const [isOpen, setIsOpen] = useState<boolean>(() => getLocalStorageItem('isOpen', false));
     const [isIngredientModal, setIsIngredientModal] = useState<boolean>(() => getLocalStorageItem('isIngredientModal', false));

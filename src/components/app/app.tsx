@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { useAppDispatch } from "../../utils/appHooks";
 import { Routes, Route, useLocation } from 'react-router-dom';
 
 import { AppHeader } from '../app-header/app-header';
@@ -14,7 +16,6 @@ import { Feed } from '../../pages/feed/feed';
 import { IngredientIndependent } from '../ingredient-independent/ingredient-independent';
 import { NotFound } from '../../pages/not-found/not-found';
 
-import { Test } from '../../pages/test/Test'; // Убрать
 
 import Modal from '../modal/modal';
 import ProtectedRouteElement from '../protected-route/protected-route';
@@ -23,9 +24,20 @@ import { Layout } from '../../pages/layout/layout';
 
 import styles from './app.module.css';
 
+import { getIngredients } from '../../services/slices/ingredientSlice';
+
+import { baseURL } from '../../utils/baseURL';
+const URL = `${baseURL}/ingredients`;
+
+
 const App = () => {
+  const dispatch = useAppDispatch();
   const location = useLocation();
   const state = location.state;
+
+  useEffect(() => {
+    dispatch(getIngredients(URL));
+}, [dispatch]);
 
   return (
     <div className={styles.maincontent}>
@@ -46,7 +58,6 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
         </Route>
-        <Route path="/test" element={<Test />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
   

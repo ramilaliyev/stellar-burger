@@ -1,6 +1,6 @@
 import styles from './ingredient-details.module.css';
 
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from "../../utils/appHooks";
 
 import IngredientProp from '../ingredient-prop/ingredient-prop';
 
@@ -9,7 +9,7 @@ import { addIngredient, addBun } from "../../services/slices/burgerConstructorSl
 import { TDraggableIngredient } from '../../types/types';
 
 const IngredientDetails = () : React.JSX.Element => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     
      const ingredient: TDraggableIngredient | null = (() => {

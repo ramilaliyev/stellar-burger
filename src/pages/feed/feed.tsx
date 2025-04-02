@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
 import { useNavigate } from "react-router-dom";
-import { feedConnectionStart } from "../../services/actions/feedActions";
-import { RootState, AppDispatch } from "../../services/store";
+import { feedConnectionStart, feedConnectionClosed } from "../../services/actions/feedActions";
 import { getIngredientDetails } from "../../services/slices/ingredientDetailSlice";
 import { getFeedDetails } from "../../utils/getFeedDetails";
 import { TIngredient, TOrderResponse } from "../../types/types";
@@ -14,15 +13,16 @@ import Modal from "../../components/modal/modal";
 import { OrderComponents } from "../../components/order-components/order-components";
 
 import { getLocalStorageItem } from "../../utils/getLSItem";
+import { baseURL } from "../../utils/baseURL";
 
 
-const URL = 'https://norma.nomoreparties.space/api/ingredients';
+const URL = `${baseURL}/ingredients`;;
 
 export const Feed = () : React.JSX.Element => {
     const [isOpen, setIsOpen] = useState<boolean>(() => getLocalStorageItem('isOpen', false));
     const [isOrderModal, setIsOrderModal] = useState<boolean>(() => getLocalStorageItem('isOrderModal', false));
 
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const closeAll = () => {
@@ -32,7 +32,7 @@ export const Feed = () : React.JSX.Element => {
     };
     
 
-    const message = useSelector((state: RootState) => state.feed.message);
+    const message = useAppSelector((state) => state.feed.message);
 
     const parsedMessage = message ? JSON.parse(message) : { orders: [] };
 
@@ -55,10 +55,13 @@ export const Feed = () : React.JSX.Element => {
     const [loadedIngredients, setLoadedIngredients] = useState<Map<string, TIngredient>>(new Map());
 
     useEffect(() => {
-        dispatch(feedConnectionStart());
+        dispatch(feedConnectionStart({ endpoint: "/orders/all" }));
+
+        return () => {
+            dispatch(feedConnectionClosed());
+        };
     }, [dispatch]);
 
-    // Получение ингредиента по ID
     const getIngredientById = async (id: string): Promise<TIngredient | null> => {        
         try {
             const result = await dispatch(
@@ -71,7 +74,6 @@ export const Feed = () : React.JSX.Element => {
         }
     };
     
-    // Расчёт общей стоимости заказа
     const calculateOrderTotal = async (ingredientIds: string[]): Promise<number> => {
         let total = 0;
         for (const id of ingredientIds) {
@@ -81,7 +83,6 @@ export const Feed = () : React.JSX.Element => {
         return total;
     };
 
-    // Заполняем общие стоимости заказов
     useEffect(() => {
         const fetchOrderTotals = async () => {
             const newOrderTotals = new Map<string, number>();
@@ -125,7 +126,7 @@ export const Feed = () : React.JSX.Element => {
             <div className={styles.container}>
                 <div className={`pr-6 mr-15 ${styles.feedList}`}>
                     {parsedMessage.orders.map((order: TOrderResponse, index: number) => {
-                        const orderTotal = orderTotals.get(order._id); // Получаем рассчитанную стоимость для этого заказа
+                        const orderTotal = orderTotals.get(order._id);
                         return (
                             <>
                                 <FeedItem key={index} feed = {order} path = {`/feed/${order._id}`}  

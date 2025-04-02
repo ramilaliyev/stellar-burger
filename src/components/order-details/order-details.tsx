@@ -1,11 +1,9 @@
 import checkMarkImg from "../../images/done.svg"; 
 import styles from "./order-details.module.css";
-import { useSelector } from "react-redux";
-
-import { RootState } from "../../services/store";
+import {  useAppSelector } from "../../utils/appHooks";
 
 const OrderDetails = () => {
-    const orderDetails = useSelector((state: RootState) => state.orderDetails);
+    const orderDetails = useAppSelector((state) => state.orderDetails);
 
     if (orderDetails.loading) {
         return <p className={`text text_type_main-large mb-8 ${styles.code}`}>Загрузка....</p>

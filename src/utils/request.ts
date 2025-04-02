@@ -1,9 +1,9 @@
 import { checkResponse } from "./checkResponse";
+import { baseURL } from "./baseURL";
 
-const URL = 'https://norma.nomoreparties.space/api';
 
 export async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    return fetch(`${URL}${endpoint}`, options)
+    return fetch(`${baseURL}${endpoint}`, options)
     .then(response => checkResponse<T>(response))
     .then(data => data)
     .catch(() => {

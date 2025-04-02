@@ -1,12 +1,11 @@
 import { CurrencyIcon, Counter } from "@ya.praktikum/react-developer-burger-ui-components";
 import React  from "react";
 import { useDrag } from "react-dnd";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "../../utils/appHooks";
 import { Link, useLocation } from "react-router-dom";
 
 import styles from './ingredient-card.module.css';
 
-import { RootState } from "../../services/store";
 import { TIngredient } from "../../types/types";
 
 type TIngredientCardProps = Pick<TIngredient, '_id' | 'name' | 'type' | 'image' | 'price' > & { ingredientBtnFunc: () => void };
@@ -25,8 +24,8 @@ const IngredientCard = (props : TIngredientCardProps) : React.JSX.Element => {
     const opacity = isDragging ? .4 : 1;
 
     
-    const ingredientsInConstructor = useSelector((state : RootState) => state.burgerConstructor.ingredients);
-    const bunInConstructor = useSelector((state : RootState) => state.burgerConstructor.bun);
+    const ingredientsInConstructor = useAppSelector((state) => state.burgerConstructor.ingredients);
+    const bunInConstructor = useAppSelector((state) => state.burgerConstructor.bun);
 
     // const allIngredients : Array<TIngredient> = [...(bunInConstructor ? bunInConstructor : []), ...ingredientsInConstructor];
     const allIngredients: Array<TIngredient> = [

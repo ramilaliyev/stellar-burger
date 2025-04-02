@@ -6,7 +6,7 @@ import { AppDispatch } from "../../services/store";
 import styles from "./login.module.css";
 
 import { handleChange } from "../../utils/handleChange";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../utils/appHooks";
 import { loginUser } from "../../services/actions/loginActions";
 
 type TLoginResponse = {
@@ -22,7 +22,7 @@ export const Login = (): React.JSX.Element => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const dispatch = useDispatch<AppDispatch>();
+    const dispatch = useAppDispatch();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
