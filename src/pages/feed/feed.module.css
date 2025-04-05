@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+}
+
+.feedList {
+    height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.lastOrders {
+    width: 50%;
+    height: 80vh;
+
+    margin: 0;
+    margin-right: 60px;
+    padding-left: 0;
+
+    overflow-y: auto;
+}
