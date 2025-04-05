@@ -3,7 +3,7 @@ import { TOrderResponse } from "../../types/types";
 
 type TParams = {
     URL: string;
-    id: string;
+    number: string | undefined | null;
 };
 
 type TOrderComponentsSlice = {
@@ -20,7 +20,7 @@ const initialState : TOrderComponentsSlice = {
 
 export const getOrderComponents = createAsyncThunk (
     "orderComponents/getOrderComponents",
-    async({ URL, id } : TParams, { rejectWithValue }) => {
+    async({ URL, number } : TParams, { rejectWithValue }) => {
         try {
             const res = await fetch(URL);
 
@@ -30,7 +30,7 @@ export const getOrderComponents = createAsyncThunk (
 
             const data = await res.json();
 
-            return data.orders.find((order : {_id: string}) => order._id === id);
+            return data.orders.find((order : {number: number}) => order.number === Number(number));
 
         } catch (error : any) {
             return rejectWithValue(error.message);

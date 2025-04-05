@@ -45,13 +45,13 @@ const App = () => {
       <Routes location={state?.backgroundLocation || location}>
         <Route path='/' element={<Home />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/feed/:id" element={<FeedDetail />} />
+        <Route path="/feed/:number" element={<FeedDetail />} />
         <Route path='/ingredients/:id' element={<IngredientIndependent />} />
         <Route path="profile" element={<ProtectedRouteElement component={<Profile />} />} >
           <Route index element={<ProfileComponent />}/>
           <Route path="orders"  element={<Orders />}/>
         </Route>
-        <Route path="/profile/orders/:id"  element={<FeedDetail />}/>
+        <Route path="/profile/orders/:number"  element={<FeedDetail />}/>
         <Route element={<ProtectedRouteElement onlyUnAuth={true} component={<Layout />} />} >
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -65,8 +65,8 @@ const App = () => {
       
         <Routes>
           <Route path='/ingredients/:id' element={<Modal />} />
-          <Route path='/feed/:id' element={<Modal />} />
-          <Route path='/profile/orders/:id' element={<Modal />} />
+          <Route path='/feed/:number' element={<Modal />} />
+          <Route path='/profile/orders/:number' element={<Modal />} />
         </Routes>
       }
     </div>

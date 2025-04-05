@@ -1,6 +1,7 @@
 import React from "react";
 import { CurrencyIcon, FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Link, useLocation } from "react-router-dom";
+import { useAppSelector } from "../../utils/appHooks";
 import { TIngredient } from "../../types/types";
 
 import styles from './feed-item.module.css';
@@ -18,14 +19,20 @@ type TOrderResponse = {
 type FeedItemProps =  {
     feed: TOrderResponse;
     path: string;
-    loadedIngredients: Map<string, TIngredient>;
     orderTotal: number | undefined;
     clickHandler: () => void;
 };
 
-export const FeedItem = ({feed, path, loadedIngredients, orderTotal, clickHandler} : FeedItemProps) : React.JSX.Element => {
-    const location = useLocation();
+export const FeedItem = ({feed, path, orderTotal, clickHandler} : FeedItemProps) : React.JSX.Element => {
+    const location = useLocation();    
     
+    const ingredients: TIngredient[] = useAppSelector((state) => state.ingredients.ingredients);
+    const ingredientsMap = ingredients.reduce((map, ingredient) => {
+    map.set(ingredient._id, ingredient);
+    return map;
+    }, new Map<string, TIngredient>()); 
+    
+
     return (
         <div className={`${styles.feedItem} p-6`}>
             <Link to={path} state={{backgroundLocation: location}} onClick={clickHandler}>
@@ -41,7 +48,7 @@ export const FeedItem = ({feed, path, loadedIngredients, orderTotal, clickHandle
                 <div className={`pt-6 ${styles.details}`}>
                     <ul className={`${styles.ingredients} mr-6`}>
                         {feed.ingredients.slice(0, 6).map((itemId, index) => {
-                            const ingredient = loadedIngredients.get(itemId);
+                            const ingredient = ingredientsMap.get(itemId);
                             if (!ingredient) return null;
 
                             const isOverflow = index === 5 && feed.ingredients.length > 6;

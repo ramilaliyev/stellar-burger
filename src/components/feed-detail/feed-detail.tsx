@@ -14,6 +14,7 @@ export const FeedDetail = (): React.JSX.Element => {
     const message = useAppSelector((state) => state.feed.message);
     const parsedMessage = message ? JSON.parse(message) : { orders: [] };
 
+
     const [loadedIngredients, setLoadedIngredients] = useState<Map<string, TIngredient>>(new Map());
 
     // Функция для получения ингредиента по ID
@@ -54,7 +55,7 @@ export const FeedDetail = (): React.JSX.Element => {
 
     return (
         <div className={`pt-30 ${styles.wrapper}`}>
-            <OrderComponents id={localStorage.getItem("orderId")} loadedIngredients={loadedIngredients} />
+            <OrderComponents loadedIngredients={loadedIngredients} />
         </div>
     );
 };

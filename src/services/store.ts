@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './rootReducer'; // Подключаем rootReducer, который уже комбинирует все слайсы
 import { socketMiddleware } from './middleware/socketMiddleware'; // Подключаем универсальный WebSocket middleware
+import { baseWsURL } from '../utils/baseURL';
 
 // Экшены для feed и orders
 import { 
@@ -42,8 +43,8 @@ const store = configureStore({
   reducer: rootReducer, // Ваш комбинированный редюсер
   middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware().concat(
-      socketMiddleware(feedWsActions), // Подключаем middleware для feed
-      socketMiddleware(ordersWsActions) // Подключаем middleware для orders
+      socketMiddleware(feedWsActions, baseWsURL), // Подключаем middleware для feed
+      socketMiddleware(ordersWsActions, baseWsURL) // Подключаем middleware для orders
     ),
   devTools: process.env.NODE_ENV !== 'production', // Включаем devTools в режиме разработки
 });

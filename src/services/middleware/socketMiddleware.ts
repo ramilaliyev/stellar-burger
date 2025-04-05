@@ -1,14 +1,13 @@
 import { Middleware, MiddlewareAPI } from 'redux';
 import { AppDispatch, RootState } from '../store';
 import { TWsActions } from '../../types/types';
-
-export const socketMiddleware = (wsActions: TWsActions): Middleware => {
+  
+export const socketMiddleware = (wsActions: TWsActions, baseURL: string): Middleware => {
   return (store: MiddlewareAPI<AppDispatch, RootState>) => {
     let socket: WebSocket | null = null;
     let reconnectInterval: NodeJS.Timeout | null = null;
 
     const connectWebSocket = (endpoint: string) => {
-      const baseURL = "wss://norma.nomoreparties.space";  
       const url = `${baseURL}${endpoint}`;
 
       if (socket) {
@@ -45,8 +44,7 @@ export const socketMiddleware = (wsActions: TWsActions): Middleware => {
       const { type, payload } = action;
       
       if (type === wsActions.connectionStart) {
-        
-        const endpoint = payload?.endpoint || "/orders/all";
+        const endpoint = payload?.endpoint;
         connectWebSocket(endpoint);  
       }
 

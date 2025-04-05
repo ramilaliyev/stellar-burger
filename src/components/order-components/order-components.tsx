@@ -1,36 +1,31 @@
 import React, { useEffect } from "react";
 import { CurrencyIcon, FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
-import { feedConnectionStart } from "../../services/actions/feedActions"; 
-import { feedConnectionClosed } from "../../services/actions/feedActions"; 
+import { useParams } from "react-router-dom";
 import { getOrderComponents } from "../../services/slices/orderComponentsSlice";
-
 import { TIngredient } from "../../types/types";
+import styles from './order-components.module.css';
 import { baseURL } from "../../utils/baseURL";
 
-import styles from './order-components.module.css';
-
-type TOrderComponents = {
-  id: string | null;
-  loadedIngredients: Map<string, TIngredient>;
-};
-
-export const OrderComponents = ({ id, loadedIngredients }: TOrderComponents): React.JSX.Element => {
+export const OrderComponents = (): React.JSX.Element => {
+  let { number } = useParams<{ number: string }>(); // получаем orderNumber из URL
   const dispatch = useAppDispatch();
-
+  
   const { components, loading, error } = useAppSelector((state) => state.orderComponents);
-
+  
+  const ingredients: TIngredient[] = useAppSelector((state) => state.ingredients.ingredients);
+  const ingredientsMap = ingredients.reduce((map, ingredient) => {
+    map.set(ingredient._id, ingredient);
+    return map;
+  }, new Map<string, TIngredient>()); 
+  
   useEffect(() => {
-    if (id) {
-      const URL = `${baseURL}/orders/all`;
-      dispatch(getOrderComponents({ URL, id }));
+    const orderNumber = number || localStorage.getItem('orderNum'); // используем number из params или localStorage
+    if (orderNumber) {
+      const URL = `${baseURL}/orders/${orderNumber}`;
+      dispatch(getOrderComponents({ URL, number: orderNumber }));
     }
-    dispatch(feedConnectionStart({ endpoint: "/orders/all" }));
-
-    return () => {
-      dispatch(feedConnectionClosed());
-    };
-  }, [dispatch, id]);
+  }, [dispatch, number]); // перезапускаем, если number изменится
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -42,6 +37,15 @@ export const OrderComponents = ({ id, loadedIngredients }: TOrderComponents): Re
 
   const amountArray = Object.entries(amount || {}).map(([id, count]) => ({ id, count }));
 
+  // Calculate total price
+  const total = amountArray.reduce((acc, item) => {
+    const ingredient = ingredientsMap.get(item.id);
+    if (ingredient) {
+      return acc + (item.count * ingredient.price);
+    }
+    return acc;
+  }, 0);
+
   return (
     <div className={`${styles.detail}`}>
       <p className={`text text_type_digits-default mb-10 ${styles.number}`}>
@@ -51,8 +55,8 @@ export const OrderComponents = ({ id, loadedIngredients }: TOrderComponents): Re
         {components ? `${components.name}` : "Имя"}
       </p>
       <p className={`text text_type_main-small mb-15 ${styles.done}`}>
-        {components ?
-          (components.status === 'done' ? 'Выполнен' :
+        {components ? 
+          (components.status === 'done' ? 'Выполнен' : 
             components.status === 'pending' ? 'В ожидании' : 'Отменен') 
           : 'Нет данных'}
       </p>
@@ -61,7 +65,7 @@ export const OrderComponents = ({ id, loadedIngredients }: TOrderComponents): Re
       </p>
       <ul className={`${styles.ingredientsList} pr-6 mb-10`}>
         {amountArray.map((item, index) => {
-          const ingredient = loadedIngredients.get(item.id);
+          const ingredient = ingredientsMap.get(item.id);
           if (!ingredient) return null;
 
           return (
@@ -75,7 +79,9 @@ export const OrderComponents = ({ id, loadedIngredients }: TOrderComponents): Re
                 <p className="text text_type_main-small mr-4">{ingredient.name}</p>
               </div>
               <div className={styles.price}>
-                <span className="mr-2 text_type_digits-default ">{item.count} x {ingredient.price}</span> 
+                <span className="mr-2 text_type_digits-default ">
+                  {item.count} x {ingredient.price}
+                </span> 
                 <CurrencyIcon type={"primary"} />
               </div>
             </li>
@@ -88,7 +94,7 @@ export const OrderComponents = ({ id, loadedIngredients }: TOrderComponents): Re
             <FormattedDate date={new Date(components.createdAt)} /> : null}
         </p>
         <p className={styles.totalPrice}>
-          <span className="text text_type_digits-default mr-2">{localStorage.getItem("totalPrice")}</span> 
+          <span className="text text_type_digits-default mr-2">{total}</span> 
           <CurrencyIcon type="primary" />
         </p>
       </div>

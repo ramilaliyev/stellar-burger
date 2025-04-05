@@ -57,12 +57,10 @@ export const Orders = (): React.JSX.Element => {
     const handleOrderClick = (order: TOrderResponse) => {
         setIsOpen(true);
         setIsOrderModal(true);
-        localStorage.setItem("orderId", order._id);
-        localStorage.setItem("totalPrice", `${orderTotals.get(order._id)}`);
+        localStorage.setItem("orderNum", order.number.toString());
     };
 
     const [orderTotals, setOrderTotals] = useState<Map<string, number>>(new Map());
-    const [loadedIngredients, setLoadedIngredients] = useState<Map<string, TIngredient>>(new Map());
 
     const getIngredientById = async (id: string): Promise<TIngredient | null> => {        
         try {
@@ -95,24 +93,13 @@ export const Orders = (): React.JSX.Element => {
 
         const fetchOrderTotals = async () => {
             const newOrderTotals = new Map<string, number>();
-            const newLoadedIngredients = new Map<string, TIngredient>();
 
             for (const order of parsedMessage.orders) {
-                for (const ingredientId of order.ingredients) {
-                    if (!newLoadedIngredients.has(ingredientId)) {
-                        const ingredient = await getIngredientById(ingredientId);
-                        if (ingredient) {
-                            newLoadedIngredients.set(ingredientId, ingredient);
-                        }
-                    }
-                }
-
                 const orderTotal = await calculateOrderTotal(order.ingredients);
                 newOrderTotals.set(order._id, orderTotal);
             }
             
             setOrderTotals(newOrderTotals);
-            setLoadedIngredients(newLoadedIngredients);
         };
 
         fetchOrderTotals();
@@ -131,8 +118,7 @@ export const Orders = (): React.JSX.Element => {
                                 <FeedItem 
                                     key={order._id} 
                                     feed={order} 
-                                    path={`/profile/orders/${order._id}`}  
-                                    loadedIngredients={loadedIngredients}  
+                                    path={`/profile/orders/${order.number}`}  
                                     orderTotal={orderTotal} 
                                     clickHandler={() => handleOrderClick(order)}
                                 />
@@ -145,7 +131,7 @@ export const Orders = (): React.JSX.Element => {
             )}
 
             <Modal isOpen={isOpen} onClose={closeAll} onOverlayClick={closeAll} onEscPress={closeAll}>
-                {isOrderModal && <OrderComponents id={localStorage.getItem('orderId')} loadedIngredients={loadedIngredients}/>}
+                {isOrderModal && <OrderComponents/>}
             </Modal>
         </>
     );

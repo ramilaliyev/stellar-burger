@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "../../utils/appHooks";
 import { useNavigate } from "react-router-dom";
 import { feedConnectionStart, feedConnectionClosed } from "../../services/actions/feedActions";
 import { getIngredientDetails } from "../../services/slices/ingredientDetailSlice";
-import { getFeedDetails } from "../../utils/getFeedDetails";
 import { TIngredient, TOrderResponse } from "../../types/types";
 import styles from './feed.module.css';
 
@@ -16,7 +15,7 @@ import { getLocalStorageItem } from "../../utils/getLSItem";
 import { baseURL } from "../../utils/baseURL";
 
 
-const URL = `${baseURL}/ingredients`;;
+const URL = `${baseURL}/ingredients`;
 
 export const Feed = () : React.JSX.Element => {
     const [isOpen, setIsOpen] = useState<boolean>(() => getLocalStorageItem('isOpen', false));
@@ -36,12 +35,10 @@ export const Feed = () : React.JSX.Element => {
 
     const parsedMessage = message ? JSON.parse(message) : { orders: [] };
 
-    const handleOrderClick = (order : TOrderResponse) => {
-        getFeedDetails({orders: parsedMessage.orders, id: order._id });
+    const handleOrderClick = (order: TOrderResponse) => {
         setIsOpen(true);
         setIsOrderModal(true);
-        localStorage.setItem("orderId", order._id);
-        localStorage.setItem("totalPrice", `${orderTotals.get(order._id)}`);
+        localStorage.setItem("orderNum", order.number.toString());
     };
 
     
@@ -52,7 +49,6 @@ export const Feed = () : React.JSX.Element => {
 
 
     const [orderTotals, setOrderTotals] = useState<Map<string, number>>(new Map());
-    const [loadedIngredients, setLoadedIngredients] = useState<Map<string, TIngredient>>(new Map());
 
     useEffect(() => {
         dispatch(feedConnectionStart({ endpoint: "/orders/all" }));
@@ -84,35 +80,23 @@ export const Feed = () : React.JSX.Element => {
     };
 
     useEffect(() => {
+        if (!parsedMessage?.orders || parsedMessage.orders.length === 0) return; 
+
         const fetchOrderTotals = async () => {
             const newOrderTotals = new Map<string, number>();
-            const newLoadedIngredients = new Map<string, TIngredient>();
 
             for (const order of parsedMessage.orders) {
-                for (const ingredientId of order.ingredients) {
-                    if (!newLoadedIngredients.has(ingredientId)) {
-                        const ingredient = await getIngredientById(ingredientId);
-                        if (ingredient) {
-                            newLoadedIngredients.set(ingredientId, ingredient);
-                        }
-                    }
-                }
 
                 const orderTotal = await calculateOrderTotal(order.ingredients);
-                
                 newOrderTotals.set(order._id, orderTotal);
-                
             }
             
             setOrderTotals(newOrderTotals);
-            setLoadedIngredients(newLoadedIngredients);
-            
         };
 
-        if (parsedMessage.orders.length) {
-            fetchOrderTotals();            
-        }
+        fetchOrderTotals();
     }, [parsedMessage.orders]);
+    
 
     const doneOrders = 
     parsedMessage.orders.map((order : TOrderResponse) => order.status === 'done' ? order.number : null).slice(0, 10);
@@ -129,8 +113,7 @@ export const Feed = () : React.JSX.Element => {
                         const orderTotal = orderTotals.get(order._id);
                         return (
                             <>
-                                <FeedItem key={index} feed = {order} path = {`/feed/${order._id}`}  
-                                loadedIngredients = {loadedIngredients}  
+                                <FeedItem key={index} feed = {order} path = {`/feed/${order.number}`}  
                                 orderTotal = {orderTotal} 
                                 clickHandler = {() => handleOrderClick(order)}/>
                             </>
@@ -142,7 +125,7 @@ export const Feed = () : React.JSX.Element => {
 
             
             <Modal isOpen={isOpen} onClose={closeAll} onOverlayClick={closeAll} onEscPress={closeAll}>
-                {isOrderModal && <OrderComponents id={localStorage.getItem("orderId") } loadedIngredients = {loadedIngredients}/>}
+                {isOrderModal && <OrderComponents/>}
             </Modal>
         </>
     )
