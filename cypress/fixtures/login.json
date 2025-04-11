@@ -1,0 +1,9 @@
+{
+    "success": true,
+    "accessToken": "Bearer accessToken123123321",
+    "refreshToken": "refreshToken1231323213210",
+    "user": {
+        "email": "ewffe33tren@tren.tr",
+        "name": "TrenerRRRRR"
+    }
+}

@@ -14,7 +14,7 @@ type TMove = {
 };
 
 
-const initialState : TBurgerConstructorSlice = {
+export const initialState : TBurgerConstructorSlice = {
     bun: null,
     ingredients: []
 };

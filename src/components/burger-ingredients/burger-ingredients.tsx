@@ -66,15 +66,7 @@ const BurgerIngredients = (props : TBurgerIngredientsProps) : JSX.Element => {
     
         setCurrent(value);
     };
-
-    // useEffect(() => {
-    //     const container = containerRef.current;
-    //     if (!container) return;
-
-    //     container.addEventListener("scroll", () => handleScroll(sections));
-    //     return () => container.removeEventListener("scroll", () => handleScroll(sections));
-    // }, []);
-
+    
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
@@ -103,7 +95,7 @@ const BurgerIngredients = (props : TBurgerIngredientsProps) : JSX.Element => {
             <div className={styles.ingredientsDisplay} ref={containerRef}>
                 {sections.map((section, index) => {
                     return (
-                        <div ref={section.ref} key={index}>
+                        <div ref={section.ref} key={index} >
                             <BurgerIngredientsGroup title={section.title}>
                                 {ingredients.filter(item => item.type === section.id).map((ingredient) => (
                                 <IngredientCard 

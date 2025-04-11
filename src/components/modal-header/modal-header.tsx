@@ -13,7 +13,7 @@ const ModalHeader = (props : TModalHeaderProps) : React.JSX.Element => {
         <>
             <div className={styles.modalHeader}>
                 <h2 className="text text_type_main-large">{props.heading}</h2>
-                <div className={styles.closeBtn} onClick={props.onClose}>
+                <div className={styles.closeBtn} onClick={props.onClose} data-testid="close-btn">
                     <CloseIcon type="primary"/>
                 </div>
             </div>

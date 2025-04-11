@@ -49,7 +49,7 @@ const IngredientCard = (props : TIngredientCardProps) : React.JSX.Element => {
 
     return (
         <Link key={props._id} to={`/ingredients/${props._id}`} state={{backgroundLocation: location}}>
-            <div className={`mb-8 ${styles.ingredientCard}`} onClick={props.ingredientBtnFunc} ref={drag} style={{ opacity }}> 
+            <div className={`mb-8 ${styles.ingredientCard}`} onClick={props.ingredientBtnFunc} ref={drag} style={{ opacity }} data-testid="ingredient-card"> 
                 <img src={props.image} alt={props.name} className="ml-1 mr-1"/>
                 <p className={`mt-1 mb-1 ${styles.price}`}>
                     <span className={`text text_type_digits-default mr-2`}>{props.price}</span>

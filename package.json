@@ -2,12 +2,13 @@
   "name": "react-vite-js",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy-script": "npm run build && scp -r ./dist/* ramil302000@158.160.175.47:/var/www/ramaliyev.nomorepartiessbs.ru/html",
+    "test": "vitest"
   },
   "dependencies": {
     "@babel/runtime": "^7.25.6",
@@ -18,10 +19,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@reduxjs/toolkit": "^2.5.1",
+    "@reduxjs/toolkit": "^2.6.1",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.1",
+    "cypress": "^14.3.0",
     "eslint": "^9.9.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
@@ -35,6 +37,7 @@
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "typescript": "^5.8.2",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vitest": "^3.1.1"
   }
 }

@@ -8,7 +8,7 @@ type TLoginSlice = {
     isLoading: boolean,
 }
 
-const initialState : TLoginSlice = {
+export const initialState : TLoginSlice = {
     isAuthenticated: false,
     accessToken: null,
     refreshToken: null,

@@ -16,7 +16,7 @@ const OrderDetails = () => {
     return (
         orderDetails.orderNum && (
             <>
-                <p className={`text text_type_digits-large mb-8 ${styles.code}`}>{orderDetails.orderNum}</p>
+                <p className={`text text_type_digits-large mb-8 ${styles.code}`} data-testid="order-code">{orderDetails.orderNum}</p>
                 <p className="text text_type_main-medium mb-15">идентификатор заказа</p>
                 <img src={checkMarkImg} alt="Done" className={`${styles.img} mb-15`} />
                 <p className="text text_type_main-small mb-2">Ваш заказ начали готовить</p>

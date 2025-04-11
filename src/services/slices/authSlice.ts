@@ -6,7 +6,7 @@ type TAuthSlice = {
   accessToken: string | null, 
 };
 
-const initialState : TAuthSlice = {
+export const initialState : TAuthSlice = {
   isAuthChecked: false,  
   isAuthenticated: false, 
   accessToken: localStorage.getItem('accessToken') || null, 

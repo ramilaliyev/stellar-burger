@@ -12,7 +12,7 @@ type TOrderDetailsSlice = {
     error: string | null
 }
 
-const initialState : TOrderDetailsSlice  = {
+export const initialState : TOrderDetailsSlice  = {
     orderNum: null,
     loading: false,
     error: null

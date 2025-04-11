@@ -12,7 +12,7 @@ type TOrderComponentsSlice = {
     error: string | null
 };
 
-const initialState : TOrderComponentsSlice = {
+export const initialState : TOrderComponentsSlice = {
     components: null,
     loading: false,
     error: null

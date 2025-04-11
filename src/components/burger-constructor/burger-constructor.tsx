@@ -85,7 +85,7 @@ const BurgerConstructor = (props : TBurgerConstructorProps) : React.JSX.Element 
 
     return (
         <section ref={drop} className={`${styles.container} pt-25 ml-10 mb-10 pl-1 pr-1`}>
-            <div className={`${styles.ingredient} ${styles.ingredientTop} ml-8`} >
+            <div data-testid="drop-target"  className={`${styles.ingredient} ${styles.ingredientTop} ml-8`} >
                 {bun ? (
                     <ConstructorElement type="top" 
                     isLocked={true} 
@@ -97,7 +97,7 @@ const BurgerConstructor = (props : TBurgerConstructorProps) : React.JSX.Element 
                     <p>Выберите булки</p>
                 )}
             </div>
-            <div className={`mt-4 ${ingredients.length === 0 ? `mb-4` : ''} ${styles.mains}`}>
+            <div data-testid="drop-target" className={`mt-4 ${ingredients.length === 0 ? `mb-4` : ''} ${styles.mains}`}>
                 {ingredients.length > 0 ? (
                     ingredients
                         .filter((ingredient : TIngredient) => ingredient.name !== '')
@@ -133,7 +133,7 @@ const BurgerConstructor = (props : TBurgerConstructorProps) : React.JSX.Element 
                     <span className="text text_type_digits-medium mr-2">{totalPrice}</span>
                     <CurrencyIcon type="primary" className={styles.icon}/>
                 </div>
-                <div className="btn" onClick={props.orderBtnFunc}>
+                <div className="btn" onClick={props.orderBtnFunc} data-testid="order-btn">
                     <Button htmlType="button" type="primary" size="large" onClick={handleOrder}>
                         Оформить заказ
                     </Button>

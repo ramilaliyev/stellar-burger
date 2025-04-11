@@ -11,7 +11,7 @@ interface OrdersConnectionStartPayload {
   endpoint: string;  // Добавляем параметр endpoint
 }
 
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
   message: '',
   isConnected: false,
   error: null,

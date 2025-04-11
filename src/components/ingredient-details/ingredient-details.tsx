@@ -38,7 +38,7 @@ const IngredientDetails = () : React.JSX.Element => {
         <>
             <img src={ingredient.image} alt={ingredient.name} className={`mb-4 ${styles.img}`} onClick={() => handleClick(ingredient)}/>
             <p className={`text text_type_main-medium mb-8 ${styles.name}`}>{ingredient.name}</p>
-            <ul className={`${styles.propsList}`}>
+            <ul className={`${styles.propsList}`} data-testid="ingredient-details">
                 <IngredientProp name="Калории,ккал" value={ingredient.calories} />
                 <IngredientProp name="Белки, г" value={ingredient.proteins} />
                 <IngredientProp name="Жиры, г" value={ingredient.fat} />

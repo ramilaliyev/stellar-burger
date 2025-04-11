@@ -40,7 +40,7 @@ const Modal = (props : TModalProps) : React.JSX.Element => {
         props.isOpen &&
         <>
             <ModalOverlay onOverlayClick={props.onOverlayClick}/>
-            <div className={`${styles.modal} p-10 pb-15`}>
+            <div className={`${styles.modal} p-10 pb-15`} data-testid="modal">
                 <ModalHeader isOpen={props.isOpen} heading={props.heading} onClose={props.onClose}/>
                 {props.children}
             </div>

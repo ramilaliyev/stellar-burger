@@ -49,14 +49,14 @@ export const Login = (): React.JSX.Element => {
                 <>
                     <h1 className="text text_type_main-medium mb-6">Вход</h1>
                     <form className={styles.form} onSubmit={handleSubmit}>
-                        <div className="mb-6">
+                        <div className="mb-6" data-testid="email-input">
                             <EmailInput onChange={handleChange(setEmail)} value={email} required />
                         </div>
-                        <div className="mb-6">
+                        <div className="mb-6" data-testid="password-input">
                             <PasswordInput onChange={handleChange(setPassword)} value={password} required />
                         </div>
                         {error && <p className="text text_type_main-default text_color_error">{error}</p>}
-                        <div className="mb-20">
+                        <div className="mb-20" data-testid="login-submit">
                             <Button htmlType="submit" type="primary" size="large" disabled={isLoading}>
                                 {isLoading ? "Загрузка..." : "Войти"}
                             </Button>
