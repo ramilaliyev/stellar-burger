@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+
+    margin-top: 120px;
+}
+
+.content {
+    width: 45vw;
+}
+
+.menu {
+    width: 320px;
+}
+
+.menu__list {
+    margin-top: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.menu__item {
+    display: flex;
+    align-items: center;
+
+    padding: 18px 0;
+
+    font-size: 24px;
+}

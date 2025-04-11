@@ -1,0 +1,28 @@
+.container {
+    width: 50%;
+}
+
+.container ul {
+    padding-left: 0;
+    list-style-type: none;
+
+    display: grid;
+    grid-template-columns: repeat(2, 120px);
+}
+
+.ordersActual {
+    display: flex;
+}
+
+.orderNums {
+    max-width: 272px;
+    min-width: 272px;
+}
+
+.orderReady {
+    color: rgba(0, 204, 204, 1);
+}
+
+.ordersTotal p {
+    filter: drop-shadow(0 0 10px #4C4CFF);
+}
