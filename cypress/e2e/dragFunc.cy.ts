@@ -3,22 +3,19 @@
 describe("Drag'n'drop", () => {
     beforeEach(() => {
       cy.viewport(1920, 1080);
-      cy.visit('http://localhost:5173');
+      cy.visit('');
     });
   
     it('Moves bun', () => {
-      cy.get('[data-testid="ingredient-card"]').first().trigger('dragstart');
-      cy.get('[data-testid="drop-target"]').first().trigger('drop');
+      cy.moveIngredients(0, true);
     });
-
+    
     it('Moves sauce', () => {
-      cy.get('[data-testid="ingredient-card"]').eq(3).trigger('dragstart');
-      cy.get('[data-testid="drop-target"]').last().trigger('drop');
+      cy.moveIngredients(3);
     });
-
+    
     it('Moves main ingredients', () => {
-      cy.get('[data-testid="ingredient-card"]').last().trigger('dragstart');
-      cy.get('[data-testid="drop-target"]').last().trigger('drop');
+      cy.moveIngredients(10);
     });
 });
   
